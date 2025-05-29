@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Header } from "@/components/header"
-import { Sidebar } from "@/components/msp-backend-sidebar"
 import { PageHeader } from "@/components/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -14,6 +13,10 @@ import Link from "next/link"
 
 export default function WorkOrdersPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [search, setSearch] = useState("")
+  const [status, setStatus] = useState("all")
+  const [priority, setPriority] = useState("all")
+  const [vendor, setVendor] = useState("all")
 
   const workOrders = [
     {
@@ -70,6 +73,17 @@ export default function WorkOrdersPage() {
     },
   ]
 
+  const filteredWorkOrders = workOrders.filter((order) => {
+    const matchesSearch =
+      order.title.toLowerCase().includes(search.toLowerCase()) ||
+      order.vendor.toLowerCase().includes(search.toLowerCase()) ||
+      order.id.toLowerCase().includes(search.toLowerCase())
+    const matchesStatus = status === "all" || order.status === status
+    const matchesPriority = priority === "all" || order.priority === priority
+    const matchesVendor = vendor === "all" || order.vendor === vendor
+    return matchesSearch && matchesStatus && matchesPriority && matchesVendor
+  })
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Active":
@@ -99,141 +113,136 @@ export default function WorkOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="md:pl-64 flex flex-col">
-        <Header onOpenSidebar={() => setSidebarOpen(true)} />
-        <main className="flex-1 p-4 md:p-6 space-y-6">
-          <PageHeader
-            title="Work Orders Management"
-            description="Create, modify, and track work orders based on hiring manager approvals"
-            action={
-              <Button asChild>
-                <Link href="/msp-backend/work-orders/create">
-                  <PlusIcon className="h-4 w-4 mr-2" />
-                  Create Work Order
-                </Link>
-              </Button>
-            }
-          />
+    <main className="w-full min-h-screen bg-white p-4 md:p-6 space-y-6">
+      <Header onOpenSidebar={() => setSidebarOpen(true)} />
+      <PageHeader
+        title="Work Orders Management"
+        description="Create, modify, and track work orders based on hiring manager approvals"
+        action={
+          <Button asChild>
+            <Link href="/msp-backend/work-orders/create">
+              <PlusIcon className="h-4 w-4 mr-2" />
+              Create Work Order
+            </Link>
+          </Button>
+        }
+      />
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FilterIcon className="h-5 w-5" />
-                Filters & Search
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="relative">
-                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input placeholder="Search work orders..." className="pl-10" />
-                </div>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="pending">Pending Approval</SelectItem>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Priorities</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Vendor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Vendors</SelectItem>
-                    <SelectItem value="techstaff">TechStaff Solutions</SelectItem>
-                    <SelectItem value="cloudtech">CloudTech Partners</SelectItem>
-                    <SelectItem value="design">Design Collective</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FilterIcon className="h-5 w-5" />
+            Filters & Search
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="relative">
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input placeholder="Search work orders..." className="pl-10" value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger className="border border-gray-300 bg-white rounded-md h-11 px-4 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="select-content-menu">
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Pending Approval">Pending Approval</SelectItem>
+                <SelectItem value="Draft">Draft</SelectItem>
+                <SelectItem value="Completed">Completed</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={priority} onValueChange={setPriority}>
+              <SelectTrigger className="border border-gray-300 bg-white rounded-md h-11 px-4 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <SelectValue placeholder="Priority" />
+              </SelectTrigger>
+              <SelectContent className="select-content-menu">
+                <SelectItem value="all">All Priorities</SelectItem>
+                <SelectItem value="High">High</SelectItem>
+                <SelectItem value="Medium">Medium</SelectItem>
+                <SelectItem value="Low">Low</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={vendor} onValueChange={setVendor}>
+              <SelectTrigger className="border border-gray-300 bg-white rounded-md h-11 px-4 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <SelectValue placeholder="Vendor" />
+              </SelectTrigger>
+              <SelectContent className="select-content-menu">
+                <SelectItem value="all">All Vendors</SelectItem>
+                <SelectItem value="TechStaff Solutions">TechStaff Solutions</SelectItem>
+                <SelectItem value="CloudTech Partners">CloudTech Partners</SelectItem>
+                <SelectItem value="Design Collective">Design Collective</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileTextIcon className="h-5 w-5" />
-                Work Orders ({workOrders.length})
-              </CardTitle>
-              <Button variant="outline" size="sm">
-                <DownloadIcon className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {workOrders.map((order) => (
-                  <div key={order.id} className="border rounded-lg p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                          <span className="text-lg font-semibold">{order.id}</span>
-                          <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
-                          <Badge className={getPriorityColor(order.priority)}>{order.priority}</Badge>
-                        </div>
-                        <h3 className="text-xl font-medium">{order.title}</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <span className="text-gray-500">Vendor:</span>
-                            <p className="font-medium">{order.vendor}</p>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Client:</span>
-                            <p className="font-medium">{order.client}</p>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Duration:</span>
-                            <p className="font-medium">
-                              {order.startDate} - {order.endDate}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Amount:</span>
-                            <p className="font-medium text-green-600">{order.amount}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-6 text-sm text-gray-500">
-                          <span>Created: {order.created}</span>
-                          <span>Approved by: {order.approvedBy}</span>
-                        </div>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <FileTextIcon className="h-5 w-5" />
+            Work Orders ({filteredWorkOrders.length})
+          </CardTitle>
+          <Button variant="outline" size="sm">
+            <DownloadIcon className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {filteredWorkOrders.map((order) => (
+              <div key={order.id} className="border rounded-lg p-6">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg font-semibold">{order.id}</span>
+                      <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
+                      <Badge className={getPriorityColor(order.priority)}>{order.priority}</Badge>
+                    </div>
+                    <h3 className="text-xl font-medium">{order.title}</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-500">Vendor:</span>
+                        <p className="font-medium">{order.vendor}</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <EyeIcon className="h-4 w-4 mr-1" />
-                          View
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <EditIcon className="h-4 w-4 mr-1" />
-                          Edit
-                        </Button>
+                      <div>
+                        <span className="text-gray-500">Client:</span>
+                        <p className="font-medium">{order.client}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Duration:</span>
+                        <p className="font-medium">
+                          {order.startDate} - {order.endDate}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Amount:</span>
+                        <p className="font-medium text-green-600">{order.amount}</p>
                       </div>
                     </div>
+                    <div className="flex items-center gap-6 text-sm text-gray-500">
+                      <span>Created: {order.created}</span>
+                      <span>Approved by: {order.approvedBy}</span>
+                    </div>
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <EyeIcon className="h-4 w-4 mr-1" />
+                      View
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <EditIcon className="h-4 w-4 mr-1" />
+                      Edit
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </main>
-      </div>
-    </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </main>
   )
 }

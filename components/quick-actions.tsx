@@ -62,7 +62,7 @@ export function QuickActions() {
                 {action.icon}
                 <div className="text-center">
                   <div className="font-medium text-sm">{action.title}</div>
-                  <div className="text-xs opacity-90">{action.description}</div>
+                  <div className="text-xs opacity-90 break-words text-wrap leading-tight">{action.description}</div>
                 </div>
               </Button>
             </Link>

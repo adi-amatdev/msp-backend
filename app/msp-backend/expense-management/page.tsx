@@ -25,6 +25,10 @@ import {
 
 export default function ExpenseManagementPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [search, setSearch] = useState("")
+  const [status, setStatus] = useState("all")
+  const [category, setCategory] = useState("all")
+  const [compliance, setCompliance] = useState("all")
 
   const expenses = [
     {
@@ -103,6 +107,17 @@ export default function ExpenseManagementPage() {
     },
   ]
 
+  const filteredExpenses = expenses.filter((expense) => {
+    const matchesSearch =
+      expense.worker.toLowerCase().includes(search.toLowerCase()) ||
+      expense.vendor.toLowerCase().includes(search.toLowerCase()) ||
+      expense.id.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = status === "all" || expense.status === status;
+    const matchesCategory = category === "all" || expense.category === category;
+    const matchesCompliance = compliance === "all" || expense.policyCompliance === compliance;
+    return matchesSearch && matchesStatus && matchesCategory && matchesCompliance;
+  });
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Pending Review":
@@ -145,253 +160,248 @@ export default function ExpenseManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="md:pl-64 flex flex-col">
-        <Header onOpenSidebar={() => setSidebarOpen(true)} />
-        <main className="flex-1 p-4 md:p-6 space-y-6">
-          <PageHeader
-            title="Expense Management"
-            description="Review and approve expense submissions from vendors and workers"
-          />
+    <main className="w-full min-h-screen bg-white p-4 md:p-6 space-y-6">
+      <Header onOpenSidebar={() => setSidebarOpen(true)} />
+      <PageHeader
+        title="Expense Management"
+        description="Review and approve expense submissions from vendors and workers"
+      />
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-yellow-100 rounded-lg">
-                    <CreditCardIcon className="h-6 w-6 text-yellow-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Pending Review</p>
-                    <p className="text-2xl font-bold">12</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <CheckCircleIcon className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Approved Today</p>
-                    <p className="text-2xl font-bold">8</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-red-100 rounded-lg">
-                    <XCircleIcon className="h-6 w-6 text-red-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Rejected</p>
-                    <p className="text-2xl font-bold">3</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <DollarSignIcon className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm font-medium text-gray-600">Total Amount</p>
-                    <p className="text-2xl font-bold">$15.2K</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <CreditCardIcon className="h-6 w-6 text-yellow-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Pending Review</p>
+                <p className="text-2xl font-bold">12</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckCircleIcon className="h-6 w-6 text-green-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Approved Today</p>
+                <p className="text-2xl font-bold">8</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <XCircleIcon className="h-6 w-6 text-red-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Rejected</p>
+                <p className="text-2xl font-bold">3</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <DollarSignIcon className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Amount</p>
+                <p className="text-2xl font-bold">$15.2K</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FilterIcon className="h-5 w-5" />
+            Filters & Search
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="relative">
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input placeholder="Search expenses..." className="pl-10" value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger className="border border-gray-300 bg-white rounded-md h-11 px-4 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="select-content-menu">
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="Pending Review">Pending Review</SelectItem>
+                <SelectItem value="Policy Review">Policy Review</SelectItem>
+                <SelectItem value="Approved">Approved</SelectItem>
+                <SelectItem value="Rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="border border-gray-300 bg-white rounded-md h-11 px-4 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent className="select-content-menu">
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="Travel">Travel</SelectItem>
+                <SelectItem value="Equipment">Equipment</SelectItem>
+                <SelectItem value="Training">Training</SelectItem>
+                <SelectItem value="Meals">Meals</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={compliance} onValueChange={setCompliance}>
+              <SelectTrigger className="border border-gray-300 bg-white rounded-md h-11 px-4 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <SelectValue placeholder="Compliance" />
+              </SelectTrigger>
+              <SelectContent className="select-content-menu">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="Compliant">Compliant</SelectItem>
+                <SelectItem value="Requires Review">Requires Review</SelectItem>
+                <SelectItem value="Non-Compliant">Non-Compliant</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline">
+              <DownloadIcon className="h-4 w-4 mr-2" />
+              Export
+            </Button>
           </div>
+        </CardContent>
+      </Card>
 
-          <Card>
+      <div className="space-y-6">
+        {filteredExpenses.map((expense) => (
+          <Card key={expense.id}>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FilterIcon className="h-5 w-5" />
-                Filters & Search
-              </CardTitle>
+              <div className="flex items-start justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-semibold">{expense.id}</span>
+                    <Badge className={getStatusColor(expense.status)}>{expense.status}</Badge>
+                    <Badge className={getPriorityColor(expense.priority)}>{expense.priority}</Badge>
+                    <Badge className={getComplianceColor(expense.policyCompliance)}>
+                      {expense.policyCompliance}
+                    </Badge>
+                  </div>
+                  <h3 className="text-xl font-medium">{expense.description}</h3>
+                  <div className="flex items-center gap-6 text-sm text-gray-600">
+                    <span>{expense.worker}</span>
+                    <span>{expense.vendor}</span>
+                    <span>WO: {expense.workOrder}</span>
+                    <span>{expense.category}</span>
+                    <span>{expense.receipts} receipts</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-blue-600">{expense.amount}</div>
+                  <div className="text-sm text-gray-500">Submitted: {expense.submittedDate}</div>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="relative">
-                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input placeholder="Search expenses..." className="pl-10" />
-                </div>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="pending">Pending Review</SelectItem>
-                    <SelectItem value="policy">Policy Review</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="travel">Travel</SelectItem>
-                    <SelectItem value="equipment">Equipment</SelectItem>
-                    <SelectItem value="training">Training</SelectItem>
-                    <SelectItem value="meals">Meals</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Compliance" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="compliant">Compliant</SelectItem>
-                    <SelectItem value="review">Requires Review</SelectItem>
-                    <SelectItem value="non-compliant">Non-Compliant</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button variant="outline">
-                  <DownloadIcon className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              <Tabs defaultValue="details" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="details">Expense Details</TabsTrigger>
+                  <TabsTrigger value="policy">Policy Check</TabsTrigger>
+                  <TabsTrigger value="actions">Review Actions</TabsTrigger>
+                </TabsList>
 
-          <div className="space-y-6">
-            {expenses.map((expense) => (
-              <Card key={expense.id}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <span className="text-lg font-semibold">{expense.id}</span>
-                        <Badge className={getStatusColor(expense.status)}>{expense.status}</Badge>
-                        <Badge className={getPriorityColor(expense.priority)}>{expense.priority}</Badge>
-                        <Badge className={getComplianceColor(expense.policyCompliance)}>
-                          {expense.policyCompliance}
-                        </Badge>
-                      </div>
-                      <h3 className="text-xl font-medium">{expense.description}</h3>
-                      <div className="flex items-center gap-6 text-sm text-gray-600">
-                        <span>{expense.worker}</span>
-                        <span>{expense.vendor}</span>
-                        <span>WO: {expense.workOrder}</span>
-                        <span>{expense.category}</span>
-                        <span>{expense.receipts} receipts</span>
+                <TabsContent value="details" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Expense Items</h4>
+                      <div className="space-y-2">
+                        {expense.items.map((item, index) => (
+                          <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span className="text-sm">{item.description}</span>
+                            <span className="font-medium">{item.amount}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">{expense.amount}</div>
-                      <div className="text-sm text-gray-500">Submitted: {expense.submittedDate}</div>
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Notes</h4>
+                      <p className="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">{expense.notes}</p>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <EyeIcon className="h-4 w-4 mr-2" />
+                        View Receipts ({expense.receipts})
+                      </Button>
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="details" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="details">Expense Details</TabsTrigger>
-                      <TabsTrigger value="policy">Policy Check</TabsTrigger>
-                      <TabsTrigger value="actions">Review Actions</TabsTrigger>
-                    </TabsList>
+                </TabsContent>
 
-                    <TabsContent value="details" className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-3">
-                          <h4 className="font-medium">Expense Items</h4>
-                          <div className="space-y-2">
-                            {expense.items.map((item, index) => (
-                              <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                <span className="text-sm">{item.description}</span>
-                                <span className="font-medium">{item.amount}</span>
-                              </div>
-                            ))}
-                          </div>
+                <TabsContent value="policy" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Policy Compliance Check</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                          <span className="text-sm">Amount within limits</span>
+                          <CheckCircleIcon className="h-4 w-4 text-green-600" />
                         </div>
-                        <div className="space-y-3">
-                          <h4 className="font-medium">Notes</h4>
-                          <p className="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">{expense.notes}</p>
-                          <Button variant="outline" size="sm" className="w-full">
-                            <EyeIcon className="h-4 w-4 mr-2" />
-                            View Receipts ({expense.receipts})
-                          </Button>
+                        <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                          <span className="text-sm">Valid business purpose</span>
+                          <CheckCircleIcon className="h-4 w-4 text-green-600" />
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                          <span className="text-sm">Receipt quality</span>
+                          <AlertTriangleIcon className="h-4 w-4 text-yellow-600" />
                         </div>
                       </div>
-                    </TabsContent>
-
-                    <TabsContent value="policy" className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-3">
-                          <h4 className="font-medium">Policy Compliance Check</h4>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                              <span className="text-sm">Amount within limits</span>
-                              <CheckCircleIcon className="h-4 w-4 text-green-600" />
-                            </div>
-                            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                              <span className="text-sm">Valid business purpose</span>
-                              <CheckCircleIcon className="h-4 w-4 text-green-600" />
-                            </div>
-                            <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                              <span className="text-sm">Receipt quality</span>
-                              <AlertTriangleIcon className="h-4 w-4 text-yellow-600" />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="space-y-3">
-                          <h4 className="font-medium">Policy Notes</h4>
-                          <div className="p-3 bg-blue-50 rounded-lg">
-                            <p className="text-sm text-blue-800">
-                              Travel expenses require pre-approval for amounts over $500. Equipment purchases must
-                              include business justification.
-                            </p>
-                          </div>
-                        </div>
+                    </div>
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Policy Notes</h4>
+                      <div className="p-3 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                          Travel expenses require pre-approval for amounts over $500. Equipment purchases must
+                          include business justification.
+                        </p>
                       </div>
-                    </TabsContent>
+                    </div>
+                  </div>
+                </TabsContent>
 
-                    <TabsContent value="actions" className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-3">
-                          <h4 className="font-medium">Review Actions</h4>
-                          <div className="space-y-2">
-                            <Button className="w-full justify-start bg-green-600 hover:bg-green-700">
-                              <CheckCircleIcon className="h-4 w-4 mr-2" />
-                              Approve Expense
-                            </Button>
-                            <Button className="w-full justify-start" variant="destructive">
-                              <XCircleIcon className="h-4 w-4 mr-2" />
-                              Reject Expense
-                            </Button>
-                            <Button className="w-full justify-start" variant="outline">
-                              Request Additional Information
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="space-y-3">
-                          <h4 className="font-medium">Review Comments</h4>
-                          <Textarea placeholder="Add comments for approval/rejection..." rows={4} />
-                          <Button variant="outline" className="w-full">
-                            Save Comments
-                          </Button>
-                        </div>
+                <TabsContent value="actions" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Review Actions</h4>
+                      <div className="space-y-2">
+                        <Button className="w-full justify-start bg-green-600 hover:bg-green-700">
+                          <CheckCircleIcon className="h-4 w-4 mr-2" />
+                          Approve Expense
+                        </Button>
+                        <Button className="w-full justify-start" variant="destructive">
+                          <XCircleIcon className="h-4 w-4 mr-2" />
+                          Reject Expense
+                        </Button>
+                        <Button className="w-full justify-start" variant="outline">
+                          Request Additional Information
+                        </Button>
                       </div>
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </main>
+                    </div>
+                    <div className="space-y-3">
+                      <h4 className="font-medium">Review Comments</h4>
+                      <Textarea placeholder="Add comments for approval/rejection..." rows={4} />
+                      <Button variant="outline" className="w-full">
+                        Save Comments
+                      </Button>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        ))}
       </div>
-    </div>
+    </main>
   )
 }

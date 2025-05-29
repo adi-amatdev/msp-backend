@@ -1,5 +1,6 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { CuboidIcon, UserCircleIcon, MenuIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,6 +10,13 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenSidebar }: HeaderProps) {
+  const pathname = usePathname()
+
+  // Only show header on /msp-backend-dashboard
+  if (pathname !== "/msp-backend-dashboard") {
+    return null
+  }
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-4 md:px-6">
       <div className="flex items-center gap-2 md:hidden">

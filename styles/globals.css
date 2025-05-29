@@ -12,6 +12,34 @@ body {
   }
 }
 
+@layer components {
+  .app-sidebar {
+    @apply fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform -translate-x-full transition-transform duration-200 ease-in-out;
+  }
+
+  .app-sidebar.open {
+    @apply translate-x-0;
+  }
+
+  .app-sidebar-overlay {
+    @apply fixed inset-0 z-40 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-200 ease-in-out;
+  }
+
+  .app-sidebar-overlay.open {
+    @apply opacity-100 pointer-events-auto;
+  }
+
+  @media (min-width: 768px) {
+    .app-sidebar {
+      @apply translate-x-0;
+    }
+  }
+
+  .select-content-menu {
+    @apply bg-white shadow-lg rounded-md border border-gray-200;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
