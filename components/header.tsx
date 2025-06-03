@@ -18,7 +18,7 @@ export function Header({ onOpenSidebar }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-4 md:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-white px-4 md:px-6 justify-between">
       <div className="flex items-center gap-2 md:hidden">
         <button onClick={onOpenSidebar} className="p-2 rounded-md hover:bg-gray-100">
           <MenuIcon className="h-5 w-5" />
@@ -31,9 +31,9 @@ export function Header({ onOpenSidebar }: HeaderProps) {
       </div>
       <div className="ml-auto flex items-center gap-4">
         <Button variant="ghost" size="sm" asChild className="font-medium">
-          <Link href="/vendor-account" className="flex items-center gap-2">
+          <Link href="/msp-backend" className="flex items-center gap-2">
             <UserCircleIcon className="h-5 w-5" />
-            <span>Vendor Account</span>
+            <span>Backend Team Account</span>
           </Link>
         </Button>
       </div>

@@ -1,50 +1,50 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus, Users, Calendar, FileText, TrendingUp, Search } from "lucide-react"
 import Link from "next/link"
+import {
+  LayoutDashboardIcon,
+  FileTextIcon,
+  ClockIcon,
+  CreditCardIcon,
+  UsersIcon,
+  StarIcon,
+} from "lucide-react"
 
 export function QuickActions() {
   const actions = [
     {
-      title: "Create Job Post",
-      description: "Create new job posting from HM requirements",
-      icon: <Plus className="h-5 w-5" />,
-      href: "/msp-dashboard/create-job-posts",
-      color: "bg-blue-600 hover:bg-blue-700",
-    },
-    {
-      title: "Screen Profiles",
-      description: "Review and validate candidate submissions",
-      icon: <Search className="h-5 w-5" />,
-      href: "/msp-dashboard/profile-screening",
+      title: "Work Orders",
+      description: "Manage client work requests",
+      icon: <FileTextIcon className="h-5 w-5" />,
+      href: "/msp-backend/work-orders",
       color: "bg-green-600 hover:bg-green-700",
     },
     {
-      title: "Schedule Interviews",
-      description: "Coordinate interviews with hiring managers",
-      icon: <Calendar className="h-5 w-5" />,
-      href: "/msp-dashboard/interview-requests",
+      title: "Timesheet Disputes",
+      description: "Resolve worker timesheet issues",
+      icon: <ClockIcon className="h-5 w-5" />,
+      href: "/msp-backend/timesheet-disputes",
+      color: "bg-yellow-600 hover:bg-yellow-700",
+    },
+    {
+      title: "Expense Management",
+      description: "Approve and manage expenses",
+      icon: <CreditCardIcon className="h-5 w-5" />,
+      href: "/msp-backend/expense-management",
       color: "bg-purple-600 hover:bg-purple-700",
     },
     {
-      title: "Release Offers",
-      description: "Process and release approved offers",
-      icon: <FileText className="h-5 w-5" />,
-      href: "/msp-dashboard/release-offers",
-      color: "bg-orange-600 hover:bg-orange-700",
-    },
-    {
-      title: "Track Progress",
-      description: "Monitor job and candidate progress",
-      icon: <TrendingUp className="h-5 w-5" />,
-      href: "/msp-dashboard/track-job-progress",
+      title: "Worker Lifecycle",
+      description: "Onboard and offboard resources",
+      icon: <UsersIcon className="h-5 w-5" />,
+      href: "/msp-backend/worker-lifecycle",
       color: "bg-indigo-600 hover:bg-indigo-700",
     },
     {
-      title: "View Reports",
-      description: "Access analytics and performance reports",
-      icon: <Users className="h-5 w-5" />,
-      href: "/msp-dashboard/reports",
+      title: "Special Billing",
+      description: "Handle custom client billing",
+      icon: <StarIcon className="h-5 w-5" />,
+      href: "/msp-backend/special-billing",
       color: "bg-gray-600 hover:bg-gray-700",
     },
   ]

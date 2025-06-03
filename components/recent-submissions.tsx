@@ -1,109 +1,73 @@
-import Link from "next/link"
-import { CalendarIcon, ClockIcon, BriefcaseIcon } from "lucide-react"
+import { CalendarIcon, ClockIcon, BriefcaseIcon, CheckCircleIcon } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
 
-// This would typically come from an API
-const recentSubmissions = [
+const lifecycleRequests = [
   {
-    id: 1,
-    candidate: {
-      name: "Alex Johnson",
-      initials: "AJ",
-      vendor: "TechTalent Solutions",
-    },
-    jobId: "JR-2025-001",
-    position: "Senior React Developer",
-    submittedDate: "Apr 14, 2025",
-    submittedTime: "2:30 PM",
-    rate: "$92/hr",
-    experience: "6 years",
-    status: "New",
+    id: "WL-2024-001",
+    type: "Onboarding",
+    worker: "Alex Rodriguez",
+    vendor: "TechStaff Solutions",
+    workOrder: "WO-2024-005",
+    position: "Senior Frontend Developer",
+    startDate: "2024-02-01",
+    endDate: "2024-08-01",
+    status: "Pending Approval",
     priority: "High",
+    submittedDate: "2024-01-15",
+    submittedBy: "Sarah Johnson",
+    documents: ["Contract", "Background Check", "Tax Forms"],
+    notes: "Urgent requirement for project starting February 1st. All documentation completed.",
+    notifications: [
+      { recipient: "Vendor", status: "Sent", date: "2024-01-15" },
+      { recipient: "HR", status: "Pending", date: "N/A" },
+    ],
   },
   {
-    id: 2,
-    candidate: {
-      name: "Maria Rodriguez",
-      initials: "MR",
-      vendor: "Elite Contractors",
-    },
-    jobId: "JR-2025-003",
-    position: "Data Scientist",
-    submittedDate: "Apr 14, 2025",
-    submittedTime: "11:45 AM",
-    rate: "$108/hr",
-    experience: "8 years",
-    status: "Under Review",
-    priority: "High",
-  },
-  {
-    id: 3,
-    candidate: {
-      name: "Robert Kim",
-      initials: "RK",
-      vendor: "CloudExperts Inc.",
-    },
-    jobId: "JR-2025-002",
+    id: "WL-2024-002",
+    type: "Offboarding",
+    worker: "Jennifer Lee",
+    vendor: "CloudTech Partners",
+    workOrder: "WO-2024-003",
     position: "DevOps Engineer",
-    submittedDate: "Apr 13, 2025",
-    submittedTime: "4:15 PM",
-    rate: "$96/hr",
-    experience: "5 years",
-    status: "Shortlisted",
+    startDate: "2023-06-01",
+    endDate: "2024-01-31",
+    status: "In Progress",
     priority: "Medium",
+    submittedDate: "2024-01-10",
+    submittedBy: "Mike Chen",
+    documents: ["Exit Interview", "Equipment Return", "Final Timesheet"],
+    notes: "Contract completion. Equipment return scheduled for January 30th.",
+    notifications: [
+      { recipient: "Vendor", status: "Sent", date: "2024-01-10" },
+      { recipient: "IT", status: "Sent", date: "2024-01-12" },
+    ],
   },
   {
-    id: 4,
-    candidate: {
-      name: "Jessica Chen",
-      initials: "JC",
-      vendor: "Design Professionals",
-    },
-    jobId: "JR-2025-004",
+    id: "WL-2024-003",
+    type: "Onboarding",
+    worker: "David Kim",
+    vendor: "Design Collective",
+    workOrder: "WO-2024-006",
     position: "UX/UI Designer",
-    submittedDate: "Apr 13, 2025",
-    submittedTime: "10:20 AM",
-    rate: "$78/hr",
-    experience: "4 years",
-    status: "New",
+    startDate: "2024-02-15",
+    endDate: "2024-12-15",
+    status: "Completed",
     priority: "Low",
-  },
-  {
-    id: 5,
-    candidate: {
-      name: "David Wilson",
-      initials: "DW",
-      vendor: "TechTalent Solutions",
-    },
-    jobId: "JR-2025-005",
-    position: "Full Stack Developer",
-    submittedDate: "Apr 12, 2025",
-    submittedTime: "3:45 PM",
-    rate: "$85/hr",
-    experience: "7 years",
-    status: "Interview Scheduled",
-    priority: "Medium",
+    submittedDate: "2024-01-08",
+    submittedBy: "Sarah Johnson",
+    documents: ["Contract", "NDA", "Equipment Request"],
+    notes: "Standard onboarding process completed successfully.",
+    notifications: [
+      { recipient: "Vendor", status: "Sent", date: "2024-01-08" },
+      { recipient: "HR", status: "Sent", date: "2024-01-09" },
+    ],
   },
 ]
 
-export function RecentSubmissions() {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "New":
-        return "bg-blue-100 text-blue-800"
-      case "Under Review":
-        return "bg-yellow-100 text-yellow-800"
-      case "Shortlisted":
-        return "bg-purple-100 text-purple-800"
-      case "Interview Scheduled":
-        return "bg-green-100 text-green-800"
-      default:
-        return "bg-gray-100 text-gray-800"
-    }
-  }
-
+export function WorkerLifecycleCards() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "High":
@@ -117,27 +81,43 @@ export function RecentSubmissions() {
     }
   }
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Pending Approval":
+        return "bg-yellow-100 text-yellow-800"
+      case "In Progress":
+        return "bg-blue-100 text-blue-800"
+      case "Completed":
+        return "bg-green-100 text-green-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Recent Candidate Submissions</CardTitle>
-        <p className="text-sm text-muted-foreground">Latest candidate profiles submitted by vendors</p>
+        <CardTitle className="text-xl">Worker Lifecycle Updates</CardTitle>
+        <p className="text-sm text-muted-foreground">Recent onboarding and offboarding requests</p>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {recentSubmissions.map((submission) => (
-            <Card key={submission.id} className="overflow-hidden border border-gray-200">
+          {lifecycleRequests.map((req) => (
+            <Card key={req.id} className="overflow-hidden border border-gray-200">
               <CardContent className="p-0">
                 <div className="flex items-center gap-3 border-b p-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted font-semibold">
-                    {submission.candidate.initials}
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted font-semibold uppercase">
+                    {req.worker
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold truncate">{submission.candidate.name}</h3>
-                    <p className="text-sm text-muted-foreground truncate">{submission.candidate.vendor}</p>
+                    <h3 className="font-semibold truncate">{req.worker}</h3>
+                    <p className="text-sm text-muted-foreground truncate">{req.vendor}</p>
                   </div>
-                  <Badge variant="outline" className={getPriorityColor(submission.priority)}>
-                    {submission.priority}
+                  <Badge variant="outline" className={getPriorityColor(req.priority)}>
+                    {req.priority}
                   </Badge>
                 </div>
 
@@ -145,42 +125,32 @@ export function RecentSubmissions() {
                   <div className="flex items-center gap-2 text-sm">
                     <BriefcaseIcon className="h-4 w-4 text-muted-foreground" />
                     <div className="min-w-0 flex-1">
-                      <div className="font-medium truncate">{submission.position}</div>
-                      <div className="text-muted-foreground">{submission.jobId}</div>
+                      <div className="font-medium truncate">{req.position}</div>
+                      <div className="text-muted-foreground">{req.workOrder}</div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 text-sm">
                     <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                    <span>{submission.submittedDate}</span>
+                    <span>Start: {req.startDate}</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-sm">
                     <ClockIcon className="h-4 w-4 text-muted-foreground" />
-                    <span>{submission.submittedTime}</span>
+                    <span>End: {req.endDate}</span>
                   </div>
 
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Rate:</span>
-                    <span className="font-medium text-green-600">{submission.rate}</span>
-                  </div>
-
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Experience:</span>
-                    <span className="font-medium">{submission.experience}</span>
-                  </div>
-
-                  <Badge variant="outline" className={`${getStatusColor(submission.status)} w-full justify-center`}>
-                    {submission.status}
+                  <Badge variant="outline" className={`${getStatusColor(req.status)} w-full justify-center`}>
+                    {req.status}
                   </Badge>
                 </div>
 
                 <div className="grid grid-cols-2 border-t">
                   <Button variant="ghost" className="rounded-none py-3 text-sm">
-                    Review
+                    View
                   </Button>
                   <Button variant="ghost" className="rounded-none border-l py-3 text-sm">
-                    Schedule
+                    Update
                   </Button>
                 </div>
               </CardContent>
@@ -190,10 +160,10 @@ export function RecentSubmissions() {
 
         <div className="mt-6 flex justify-end">
           <Link
-            href="/msp-dashboard/candidate-review"
+            href="/msp-backend/worker-lifecycle"
             className="text-sm font-medium text-blue-600 hover:text-blue-800"
           >
-            View All Submissions
+            View All Worker Lifecycles
           </Link>
         </div>
       </CardContent>

@@ -2,6 +2,7 @@ import { UserCircleIcon } from "lucide-react"
 import { BackButton } from "@/components/back-button"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 interface PageHeaderProps {
   title: string
@@ -13,7 +14,13 @@ interface PageHeaderProps {
   }
 }
 
+
 export function PageHeader({ title, description, action }: PageHeaderProps) {
+  const paths = ["/msp-backend/work-orders/create"];
+  const path = usePathname();
+  if (paths.includes(path)){
+    return null;
+  }
   return (
     <div className="border-b pb-4">
       <div className="flex items-center justify-between py-4">
@@ -21,7 +28,7 @@ export function PageHeader({ title, description, action }: PageHeaderProps) {
         <Button variant="ghost" size="sm" asChild className="font-medium">
           <Link href="/vendor-account" className="flex items-center gap-2">
             <UserCircleIcon className="h-5 w-5" />
-            <span>Vendor Account</span>
+            <span>Backend Team Account</span>
           </Link>
         </Button>
       </div>

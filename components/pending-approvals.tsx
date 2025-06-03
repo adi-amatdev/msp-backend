@@ -180,7 +180,7 @@ export function PendingApprovals() {
           ))}
         </div>
         <div className="mt-4 flex justify-end">
-          <Link href="/msp-dashboard/approvals" className="text-sm font-medium text-blue-600 hover:text-blue-800">
+          <Link href="/msp-backend/timesheet-disputes" className="text-sm font-medium text-blue-600 hover:text-blue-800">
             View All Approvals
           </Link>
         </div>

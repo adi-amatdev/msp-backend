@@ -19,7 +19,7 @@ export default function CreateWorkOrderPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {/* <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} /> */}
       <div className="flex flex-col">
         <Header onOpenSidebar={() => setSidebarOpen(true)} />
         <main className="flex-1 p-4 md:p-6 space-y-6">
