@@ -19,7 +19,7 @@ interface SidebarProps {
 const navigation = [
   {
     name: "Dashboard",
-    href: "/msp-backend",
+    href: "",
     icon: LayoutDashboardIcon,
   },
   {
